@@ -1,243 +1,6 @@
 {
-  "name": "workflow1",
+  "name": "Webhook",
   "nodes": [
-    {
-      "parameters": {
-        "formTitle": "Fale conosco ",
-        "formDescription": "entre em contato, retornaremos em breve.",
-        "formFields": {
-          "values": [
-            {
-              "fieldName": "Nome ",
-              "fieldLabel": "Digite o seu nome.",
-              "requiredField": true
-            },
-            {
-              "fieldName": "=Email",
-              "fieldLabel": "Digite o seu Email.",
-              "fieldType": "email",
-              "requiredField": true
-            },
-            {
-              "fieldName": "Assunto ",
-              "fieldLabel": " ",
-              "fieldType": "dropdown",
-              "fieldOptions": {
-                "values": [
-                  {
-                    "option": "Dúvida Geral"
-                  },
-                  {
-                    "option": "Feedback"
-                  },
-                  {
-                    "option": "Problema técnico"
-                  }
-                ]
-              },
-              "requiredField": true
-            },
-            {
-              "fieldName": "Mensagem",
-              "fieldLabel": "Digite a sua mensagem",
-              "fieldType": "textarea",
-              "requiredField": true
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.formTrigger",
-      "typeVersion": 2.4,
-      "position": [
-        0,
-        0
-      ],
-      "id": "fccb65eb-07ff-40d4-bd50-4b9e6c21223b",
-      "name": "On form submission",
-      "webhookId": "4784f574-3768-4c7d-8421-b566b0d966a1"
-    },
-    {
-      "parameters": {
-        "sendTo": "ingrid.ferreira.santos04@gmail.com",
-        "subject": "Teste de envio pelo n8n",
-        "message": "=Olá Admin! <br>\no usuáio {{ $json['nome '] }} (email: {{ $json.email }}) enviou uma nova mensagem pelo formulário.<br> <br>\nmensagem completa:\n{{ $json.mensagem }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.2,
-      "position": [
-        608,
-        0
-      ],
-      "id": "d8a5b984-d70b-4fe5-8f63-10ac086a0d18",
-      "name": "Send a message",
-      "webhookId": "2283c91b-bfce-4e04-ab4b-bcaa6deac6a2",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "8fKF4RRAD5Q6EkFA",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "append",
-        "documentId": {
-          "__rl": true,
-          "value": "1PgckM-dMDrg_cp-CMfPojbi5zEM1TIzW4liEUi2Kk0A",
-          "mode": "list",
-          "cachedResultName": "Mensagens",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1PgckM-dMDrg_cp-CMfPojbi5zEM1TIzW4liEUi2Kk0A/edit?usp=drivesdk"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "gid=0",
-          "mode": "list",
-          "cachedResultName": "Página1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1PgckM-dMDrg_cp-CMfPojbi5zEM1TIzW4liEUi2Kk0A/edit#gid=0"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "nome ": "={{ $json['Nome '] }}",
-            "email": "={{ $json.Email }}",
-            "dia e hora": "={{ $json['Dia e Hora'] }}",
-            "mensagem": "={{ $json.Mensagem }}",
-            "id ": "={{ $json.Id }}"
-          },
-          "matchingColumns": [],
-          "schema": [
-            {
-              "id": "id ",
-              "displayName": "id ",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "nome ",
-              "displayName": "nome ",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "email",
-              "displayName": "email",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "dia e hora",
-              "displayName": "dia e hora",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "mensagem",
-              "displayName": "mensagem",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.7,
-      "position": [
-        416,
-        0
-      ],
-      "id": "bee4d4d2-5b8a-4042-bbd7-8bf441ed54d9",
-      "name": "Append row in sheet",
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "fEQZxc2vyP1Ab07M",
-          "name": "Google Sheets account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "4d3e5204-373c-4393-8200-bde091c7977f",
-              "name": "=Nome ",
-              "value": "={{ $json[\"Nome \"].trim() }}\n",
-              "type": "string"
-            },
-            {
-              "id": "660da28b-3c64-4e4c-826d-78271bc9f6c5",
-              "name": "=Email",
-              "value": "={{ $json.Email }}",
-              "type": "string"
-            },
-            {
-              "id": "b50a91bf-772d-4dff-8014-dc5c32a2e0b5",
-              "name": "=Dia e Hora",
-              "value": "={{ $now.toFormat('dd/MM/yyyy HH:mm') }}\n",
-              "type": "string"
-            },
-            {
-              "id": "ea6e24f5-8bfa-4bf4-83b5-7d1d503fda2e",
-              "name": "=Id",
-              "value": "={{ DateTime.now().toMillis() + \"-\" + $json[\"E-mail\"] }}",
-              "type": "string"
-            },
-            {
-              "id": "76cab7ed-c5a2-45a3-b6e8-876b84fef57d",
-              "name": "=Mensagem",
-              "value": "={{ $json.Mensagem }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        208,
-        0
-      ],
-      "id": "36030840-7e0f-4045-8cb0-f744f7827c32",
-      "name": "Edit Fields"
-    },
-    {
-      "parameters": {
-        "content": "### Integração Google",
-        "height": 176,
-        "width": 912,
-        "color": 4
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -64,
-        -32
-      ],
-      "typeVersion": 1,
-      "id": "9e7d5bb2-80fe-4c3b-8662-c4767e8e6ffe",
-      "name": "Sticky Note"
-    },
     {
       "parameters": {
         "httpMethod": "POST",
@@ -247,10 +10,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -32,
-        208
+        32,
+        240
       ],
-      "id": "eb5ff145-06d7-436f-a258-b5ded01acbf3",
+      "id": "2e336861-d103-4aa6-8438-f3d608483185",
       "name": "Webhook",
       "webhookId": "a98956d0-4b30-4265-923e-c5ef06667ca9"
     },
@@ -337,10 +100,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        192,
-        208
+        256,
+        240
       ],
-      "id": "801af0e7-a554-43e1-81b3-c3275aa48294",
+      "id": "f32735e2-c966-4e7a-9fde-fe4968b93b1c",
       "name": "Append row in sheet1",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -353,70 +116,34 @@
       "parameters": {
         "content": "### Webhook",
         "height": 208,
-        "width": 480,
-        "color": 4
+        "width": 560
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -64,
-        176
+        -32,
+        208
       ],
       "typeVersion": 1,
-      "id": "669d9d14-b647-4c2b-8322-5ca0f5662678",
+      "id": "4183c9b5-5187-4d6d-b609-3d0bf79c200d",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "para rodar esse fluxo, é necessário ir no link:\nhttps://reqbin.com/\n",
+        "height": 112
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        112,
+        432
+      ],
+      "typeVersion": 1,
+      "id": "4f6adb4b-011a-4c68-a95e-26057bcee201",
       "name": "Sticky Note1"
     }
   ],
-  "pinData": {
-    "On form submission": [
-      {
-        "json": {
-          "Nome ": "Giovanna de Souza",
-          "Email": "gigisouza2802@gmail.com",
-          "Assunto ": "Problema técnico",
-          "Mensagem": "Testando...",
-          "submittedAt": "2026-01-20T08:19:43.325-05:00",
-          "formMode": "test"
-        },
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ]
-  },
+  "pinData": {},
   "connections": {
-    "On form submission": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Append row in sheet": {
-      "main": [
-        [
-          {
-            "node": "Send a message",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields": {
-      "main": [
-        [
-          {
-            "node": "Append row in sheet",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Webhook": {
       "main": [
         [
@@ -434,11 +161,10 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "9129f702-2658-4e84-9d6a-7cb082624962",
+  "versionId": "bd69cd00-831f-476c-aa06-c2df896a6299",
   "meta": {
-    "templateCredsSetupCompleted": true,
     "instanceId": "426fe311161d7f1f4f64dd898df580e2c7b62c8c50548d914160cc4832c991db"
   },
-  "id": "ILoOjrhGAG-f4JhSrYtU5",
+  "id": "1hIkd-fkl4vgQbK1Rxv95",
   "tags": []
 }

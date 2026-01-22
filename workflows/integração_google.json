@@ -1,5 +1,5 @@
 {
-  "name": "workflow1",
+  "name": "integração_google",
   "nodes": [
     {
       "parameters": {
@@ -224,9 +224,10 @@
     },
     {
       "parameters": {
-        "content": "Integração Google.",
+        "content": "### Integração Google",
         "height": 176,
-        "width": 912
+        "width": 912,
+        "color": 4
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
@@ -236,128 +237,17 @@
       "typeVersion": 1,
       "id": "9e7d5bb2-80fe-4c3b-8662-c4767e8e6ffe",
       "name": "Sticky Note"
-    },
-    {
-      "parameters": {
-        "httpMethod": "POST",
-        "path": "a98956d0-4b30-4265-923e-c5ef06667ca9",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2.1,
-      "position": [
-        -32,
-        208
-      ],
-      "id": "eb5ff145-06d7-436f-a258-b5ded01acbf3",
-      "name": "Webhook",
-      "webhookId": "a98956d0-4b30-4265-923e-c5ef06667ca9"
-    },
-    {
-      "parameters": {
-        "operation": "append",
-        "documentId": {
-          "__rl": true,
-          "value": "1PgckM-dMDrg_cp-CMfPojbi5zEM1TIzW4liEUi2Kk0A",
-          "mode": "list",
-          "cachedResultName": "Mensagens",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1PgckM-dMDrg_cp-CMfPojbi5zEM1TIzW4liEUi2Kk0A/edit?usp=drivesdk"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "gid=0",
-          "mode": "list",
-          "cachedResultName": "Página1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1PgckM-dMDrg_cp-CMfPojbi5zEM1TIzW4liEUi2Kk0A/edit#gid=0"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "nome ": "={{ $json.body.nome }}",
-            "email": "={{ $json.body.email }}",
-            "dia e hora": "={{ $json.body.data }}",
-            "mensagem": "={{ $json.body.mensagem }}",
-            "id ": "={{ $json.body.id }}"
-          },
-          "matchingColumns": [],
-          "schema": [
-            {
-              "id": "id ",
-              "displayName": "id ",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "nome ",
-              "displayName": "nome ",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "email",
-              "displayName": "email",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "dia e hora",
-              "displayName": "dia e hora",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "mensagem",
-              "displayName": "mensagem",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.7,
-      "position": [
-        192,
-        208
-      ],
-      "id": "801af0e7-a554-43e1-81b3-c3275aa48294",
-      "name": "Append row in sheet1",
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "fEQZxc2vyP1Ab07M",
-          "name": "Google Sheets account"
-        }
-      }
     }
   ],
   "pinData": {
     "On form submission": [
       {
         "json": {
-          "Nome ": "Gabriela",
-          "Email": "gabrielasantos@gmail.com",
+          "Nome ": "Giovanna de Souza",
+          "Email": "gigisouza2802@gmail.com",
           "Assunto ": "Problema técnico",
-          "Mensagem": "Prezados, Suporte.\r\n\r\nEstou enfrentando problemas com o monitor de trabalho. Ao ligar o computador, o monitor não exibe imagem, permanecendo apagado. Realizei as verificações básicas, como conferência dos cabos de energia e de conexão com o computador, além de testar em outra tomada, porém o problema persiste.\r\n\r\nEssa falha está impactando diretamente minhas atividades, impossibilitando o uso adequado do equipamento. Solicito, por gentileza, a verificação do ocorrido e as orientações necessárias para correção ou substituição do monitor, se aplicável.\r\n\r\nFico no aguardo de retorno para dar andamento à solução.\r\n\r\nAtenciosamente,\r\nGabriela",
-          "submittedAt": "2026-01-09T11:41:43.488-05:00",
+          "Mensagem": "Testando...",
+          "submittedAt": "2026-01-20T08:19:43.325-05:00",
           "formMode": "test"
         },
         "pairedItem": {
@@ -399,17 +289,6 @@
           }
         ]
       ]
-    },
-    "Webhook": {
-      "main": [
-        [
-          {
-            "node": "Append row in sheet1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
     }
   },
   "active": false,
@@ -417,7 +296,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "dba248ca-9324-413e-8842-098a5ff0eb1a",
+  "versionId": "b0aff0c2-eecb-45ca-a466-00c3d589555a",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "426fe311161d7f1f4f64dd898df580e2c7b62c8c50548d914160cc4832c991db"
