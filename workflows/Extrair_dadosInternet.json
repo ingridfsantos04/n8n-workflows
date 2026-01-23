@@ -1,0 +1,447 @@
+{
+  "name": "Extrair_dadosInternet",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "77ff83c6-00b9-4b28-a53a-5f0e256ff78f",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "=https://viacep.com.br/ws/{{ $json.cep }}/json/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "98400b5c-3f99-4623-9584-008fab4b4b13",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "238300a1-ebb1-4b68-ae5f-f88adc0df209",
+              "name": "cep",
+              "value": "08223272",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "a893cbf7-6d1c-4b00-872e-3fc492698ffe",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "content": "### Obter dados CEP",
+        "height": 192,
+        "width": 672,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -48,
+        -32
+      ],
+      "typeVersion": 1,
+      "id": "30159053-5644-4179-b850-f9abc4895023",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        272
+      ],
+      "id": "7d188b93-f22d-479a-a3c6-765ed28e2201",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=brl&include_last_updated_at=true",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        192,
+        272
+      ],
+      "id": "f6f57567-f467-4928-9e2e-7008a407974a",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1v3XFh0Jy2v74J6hR0q5J985M9pFIENZR42E4JkNZOIE",
+          "mode": "list",
+          "cachedResultName": "biticoin",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1v3XFh0Jy2v74J6hR0q5J985M9pFIENZR42E4JkNZOIE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1v3XFh0Jy2v74J6hR0q5J985M9pFIENZR42E4JkNZOIE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Valor ": "={{ $json.bitcoin.brl }}",
+            "Data": "={{ new Date($json.bitcoin.last_updated_at * 1000).toISOString() }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Valor ",
+              "displayName": "Valor ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Data",
+              "displayName": "Data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        400,
+        272
+      ],
+      "id": "475268ad-a6e2-4f18-9b24-d4a9f212e14b",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "fEQZxc2vyP1Ab07M",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "### Obter valor moeda",
+        "height": 224,
+        "width": 672
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -48,
+        208
+      ],
+      "typeVersion": 1,
+      "id": "5188270a-5365-448f-9751-225a7ee43fc5",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -16,
+        544
+      ],
+      "id": "65fd868d-007d-4547-8ae9-55f3ab5f0a33",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "url": "https://news.ycombinator.com/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        192,
+        544
+      ],
+      "id": "0b8833c4-291d-4c0e-9a7e-598599b5210f",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Title",
+              "cssSelector": ".titleline",
+              "skipSelectors": ".sitestr, .sitebit, .comhead",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        400,
+        544
+      ],
+      "id": "82daf429-c273-4bf0-8974-f56e144bb360",
+      "name": "HTML"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Title",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        16,
+        784
+      ],
+      "id": "c9aa61ba-3562-4d26-b661-09c5a086b3c3",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "maxItems": 5
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        224,
+        784
+      ],
+      "id": "10a2b0db-58ee-47f2-9ef8-6dd9cc8bc9fa",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "Title"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        432,
+        784
+      ],
+      "id": "c853330e-b59a-40cd-b4a4-65e46db0f235",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "sendTo": "dev.ingridfs@gmail.com",
+        "subject": "Notícias recentes.",
+        "message": "=Olá Confira algumas publicações recentes: <br><br>\n\n{{ $json.Title.join(\"<br><br>\") }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        784
+      ],
+      "id": "ea02b428-2c7d-4832-8b58-f229cd094de1",
+      "name": "Send a message",
+      "webhookId": "75aff724-0ba6-4a5c-baf9-9eb3c3773a2d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "8fKF4RRAD5Q6EkFA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "### Web scrapping",
+        "height": 432,
+        "width": 960,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -64,
+        512
+      ],
+      "typeVersion": 1,
+      "id": "2b616285-34d0-47c6-baff-cdd4ee9dde86",
+      "name": "Sticky Note2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "d2c2405c-ea0c-484e-a5f4-48df9a05fda1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "426fe311161d7f1f4f64dd898df580e2c7b62c8c50548d914160cc4832c991db"
+  },
+  "id": "o1FfuKHzmpfLOZrB6BYPW",
+  "tags": []
+}
