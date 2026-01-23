@@ -1,0 +1,139 @@
+{
+  "name": "agente_IA",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a1460c3a-568f-4ba8-9409-e8dd7366e93e",
+      "name": "When chat message received",
+      "webhookId": "55f86c58-7926-4f07-ac0f-70785520714b"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Você é um assistente prestativo, responda sempre em um tom amigável e criativo, seja claro e objetivo, responda em no máximo um parágrafo curto."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "2cb26a14-0c4c-4adb-9a85-dcea54d89604",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "meta-llama/llama-4-maverick-17b-128e-instruct",
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        112,
+        192
+      ],
+      "id": "83ff912b-0228-4175-902c-a1e5179d635b",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "hV01Gk8vljo6T3P9",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        176
+      ],
+      "id": "69a16263-b04e-4d71-b1f2-267f280b5030",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "OAdg4ZBOlpL9Gxjo",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        256,
+        192
+      ],
+      "id": "9452ec91-0c33-44a6-83c6-6d173bdfe781",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "51b92990-1105-46e7-9a70-478d1b4f39dd",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "426fe311161d7f1f4f64dd898df580e2c7b62c8c50548d914160cc4832c991db"
+  },
+  "id": "tpAYUbyglaOoTddKcJzCZ",
+  "tags": []
+}
