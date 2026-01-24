@@ -3,20 +3,6 @@
   "nodes": [
     {
       "parameters": {
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
-      "typeVersion": 1.4,
-      "position": [
-        0,
-        0
-      ],
-      "id": "a1460c3a-568f-4ba8-9409-e8dd7366e93e",
-      "name": "When chat message received",
-      "webhookId": "55f86c58-7926-4f07-ac0f-70785520714b"
-    },
-    {
-      "parameters": {
         "options": {
           "systemMessage": "Você é um assistente prestativo, responda sempre em um tom amigável e criativo, seja claro e objetivo, responda em no máximo um parágrafo curto."
         }
@@ -24,7 +10,7 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        208,
+        232,
         0
       ],
       "id": "2cb26a14-0c4c-4adb-9a85-dcea54d89604",
@@ -40,8 +26,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
       "typeVersion": 1,
       "position": [
-        112,
-        192
+        -112,
+        328
       ],
       "id": "83ff912b-0228-4175-902c-a1e5179d635b",
       "name": "Groq Chat Model",
@@ -54,13 +40,15 @@
     },
     {
       "parameters": {
-        "options": {}
+        "options": {
+          "maxOutputTokens": 2048
+        }
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        -112,
-        176
+        112,
+        224
       ],
       "id": "69a16263-b04e-4d71-b1f2-267f280b5030",
       "name": "Google Gemini Chat Model",
@@ -76,27 +64,70 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        256,
-        192
+        240,
+        224
       ],
       "id": "9452ec91-0c33-44a6-83c6-6d173bdfe781",
       "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Use essa ferramenta para obter o preço do Bitcoin, somente quando o usuário pedir",
+        "url": "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=brl&include_last_updated_at=true",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.3,
+      "position": [
+        368,
+        224
+      ],
+      "id": "8ed2c761-bc94-4f4f-b51a-c0f50757d779",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Use essa tool quando o usuário pedir por notícias ou perguntar por novidades.",
+        "url": "https://techcrunch.com/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedReadTool",
+      "typeVersion": 1.2,
+      "position": [
+        496,
+        224
+      ],
+      "id": "b205f230-bb87-4ff5-9485-d7c52663d5f5",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Olá! 👋\nSou o seu assistente virtual  como eu poderia te ajudar?",
+        "options": {
+          "subtitle": "Estamos aqui para ajudar você 24hrs por dia, 7 dias por semana.",
+          "title": "Olá! 👋"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -112,
+        0
+      ],
+      "id": "a1460c3a-568f-4ba8-9409-e8dd7366e93e",
+      "name": "When chat message received",
+      "webhookId": "55f86c58-7926-4f07-ac0f-70785520714b"
     }
   ],
   "pinData": {},
   "connections": {
-    "When chat message received": {
-      "main": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "main",
-            "index": 0
-          }
-        ]
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        []
       ]
     },
-    "Groq Chat Model": {
+    "Google Gemini Chat Model": {
       "ai_languageModel": [
         [
           {
@@ -105,11 +136,6 @@
             "index": 0
           }
         ]
-      ]
-    },
-    "Google Gemini Chat Model": {
-      "ai_languageModel": [
-        []
       ]
     },
     "Simple Memory": {
@@ -122,14 +148,47 @@
           }
         ]
       ]
+    },
+    "HTTP Request": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "51b92990-1105-46e7-9a70-478d1b4f39dd",
+  "versionId": "5fd7b47e-3bb5-478c-94f9-7a1e4adc1282",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "426fe311161d7f1f4f64dd898df580e2c7b62c8c50548d914160cc4832c991db"
