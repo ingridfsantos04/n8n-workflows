@@ -133,6 +133,21 @@
       ],
       "id": "01961a88-11e4-4b19-bb3f-5d3534433be0",
       "name": "Filter"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "dados",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        592,
+        -16
+      ],
+      "id": "02523bda-d1d7-4ff9-928d-7beb04d8d87d",
+      "name": "Aggregate"
     }
   ],
   "pinData": {},
@@ -169,6 +184,17 @@
           }
         ]
       ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -176,7 +202,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "c1e6a8dd-b38a-4712-9f48-8982eb3c21dc",
+  "versionId": "0b2eb2a0-aa8d-446b-a64e-9ccc9a4f68b2",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "426fe311161d7f1f4f64dd898df580e2c7b62c8c50548d914160cc4832c991db"
