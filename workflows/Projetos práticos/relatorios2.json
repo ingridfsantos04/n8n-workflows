@@ -1,0 +1,489 @@
+{
+  "name": "relatorios",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "months",
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -272,
+        128
+      ],
+      "id": "d0ae33d7-74aa-44f1-b4e6-322f49711022",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "62dcae30-cbf3-4577-b25b-67d46f00fcbb",
+              "name": "data_inicio",
+              "value": "={{ $today.minus({month:1}).startOf('month').toFormat('yyyy-MM-dd') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -272,
+        -208
+      ],
+      "id": "8b6113cc-5924-4453-bb29-169c202fbe17",
+      "name": "Data dinâmica - Início mês anterior",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "46a059f4-9307-43e8-b62e-66e5c5cef7ce",
+              "name": "data_inicio",
+              "value": "={{ DateTime.fromObject({year:2025, month: 8, day:1}).toFormat('yyyy-MM-dd') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -48,
+        128
+      ],
+      "id": "e68465cc-f3a4-4221-a1b7-01328d2ccfaa",
+      "name": "Obter data filtragem"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1g0qX_0kgKcv4P890tHID5CCSsFA8ak8TRh6vt8l9-Ts",
+          "mode": "list",
+          "cachedResultName": "atividades_empresa",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1g0qX_0kgKcv4P890tHID5CCSsFA8ak8TRh6vt8l9-Ts/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 844234940,
+          "mode": "list",
+          "cachedResultName": "atividades_empresa",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1g0qX_0kgKcv4P890tHID5CCSsFA8ak8TRh6vt8l9-Ts/edit#gid=844234940"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        176,
+        128
+      ],
+      "id": "84f8306d-9898-4a6d-b029-a6275515988d",
+      "name": "Obter dados",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "fEQZxc2vyP1Ab07M",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "057f9e64-a175-4c2b-8597-26c5c4e871a3",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "={{ $('Obter data filtragem').item.json.data_inicio }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        400,
+        128
+      ],
+      "id": "01961a88-11e4-4b19-bb3f-5d3534433be0",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "dados",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        624,
+        128
+      ],
+      "id": "02523bda-d1d7-4ff9-928d-7beb04d8d87d",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        928,
+        352
+      ],
+      "id": "d2f03377-5882-4205-9653-2a18d25fd932",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "OAdg4ZBOlpL9Gxjo",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Faça um resumo executivo do relatório abaixo, pronto para ser enviado por email.\n- Destaque apenas os pontos mais relevantes e críticos, agrupando informações semelhantes.\n- Use mardown para organizar o texto em parágrafos claros e listas com marcadores quando necessário.\n- Retorne direto o resumo, sem introduções como \"aqui está\" ou mensagens adicionais.\n- Finalize o email sem saudações ou assinaturas.\n\nRelatório:\n{{ $json.text }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        1200,
+        128
+      ],
+      "id": "6206f9e0-46bb-4e22-92b7-b500acce4fcd",
+      "name": "Resumo"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Aja como um analista estratéfgico que prepara relatórios executivos para a diretoria. Hoje é dia primeiro do mês, analise a lisa de atividades da empresa do mês passado e extraia insights.\n- Retorne o texto sem formatação (ex: em negrito usando *), apenas com quebra de linhas e parágrafos.\n- Inicie apenas com uma frase de introdução, sem outras informações.\n- Faça um resumo das atividades de cada departamento, destacando primeiro as de maior prioridade.\n- Identifique tarefas que estão atrasadas ou em revisão e explique os riscos potenciais.\n- Aponte quias áreas tiveram mais entragas concluídas e quias ainda têm maior volume de pendêcias.\n- Finaliza com recomendações práticas para a diretoria priorizar recursos no próximo trimestre.\n- Não adicione mensagens de encerramento ao final do texto.\n\nOs dados (em formato JSON) são esses:\n\n{{ JSON.stringify($json, null, 2)}}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        848,
+        128
+      ],
+      "id": "812d22ca-07ff-46a4-a498-039a73565bc3",
+      "name": "Análise"
+    },
+    {
+      "parameters": {
+        "folderId": "default",
+        "title": "=Relatório - {{ $now.format('dd-MM-yyyy H:m:ss') }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1776,
+        128
+      ],
+      "id": "34a51b75-8be4-4e73-a9ed-99d6cc1b0f7b",
+      "name": "Criar documento",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "UP67FcVUmLq6Ks2z",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "markdownToHtml",
+        "markdown": "={{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        1552,
+        128
+      ],
+      "id": "be0922e5-596f-454a-9c5a-cf09763b0048",
+      "name": "Conversão HTML"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('Análise').item.json.text }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        128
+      ],
+      "id": "4cf0f61b-c269-45fa-8ed6-01abe05dd3df",
+      "name": "Adicionar ao documento",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "UP67FcVUmLq6Ks2z",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "dev.ingridfs@gmail.com",
+        "subject": "Relatório de atividades do mês anterior.",
+        "message": "={{ $('Conversão HTML').item.json.data }} <br><br><a href='https://docs.google.com/document/d/{{ $('Criar documento').item.json.id }}'>Confira o relatório detalhado no Google Docs</a>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2224,
+        128
+      ],
+      "id": "c91e05d0-d2c8-4e4c-b6c9-115876a11cac",
+      "name": "Send a message",
+      "webhookId": "a02f034b-3960-42cb-ad82-d55a7c8f1503",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "KxkcyVwYxlXY3PHY",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.4,
+      "position": [
+        0,
+        -80
+      ],
+      "id": "51661ba0-e586-4d8e-9564-6556d42ab1f8",
+      "name": "Form",
+      "webhookId": "741328cd-d981-462e-afa3-d61afeb34699"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 3
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -288,
+        704
+      ],
+      "id": "5c1d8f2d-2e20-4340-a756-48ca70114e3d",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "operation": "download"
+      },
+      "type": "n8n-nodes-base.microsoftOneDrive",
+      "typeVersion": 1.1,
+      "position": [
+        -80,
+        704
+      ],
+      "id": "ff011bfa-a8b0-42a0-bd6b-7a6bc3a74c8c",
+      "name": "Download a file"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Obter data filtragem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obter dados": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obter data filtragem": {
+      "main": [
+        [
+          {
+            "node": "Obter dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Análise",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Análise",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Resumo",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Análise": {
+      "main": [
+        [
+          {
+            "node": "Resumo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resumo": {
+      "main": [
+        [
+          {
+            "node": "Conversão HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Conversão HTML": {
+      "main": [
+        [
+          {
+            "node": "Criar documento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar documento": {
+      "main": [
+        [
+          {
+            "node": "Adicionar ao documento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Adicionar ao documento": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Download a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "4d591e26-d34f-4e39-9275-bb7d9eefee06",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "426fe311161d7f1f4f64dd898df580e2c7b62c8c50548d914160cc4832c991db"
+  },
+  "id": "aVcAIgfqTVDfjaUtZljgd",
+  "tags": []
+}
