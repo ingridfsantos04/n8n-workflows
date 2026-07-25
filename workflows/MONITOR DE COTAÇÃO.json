@@ -1,0 +1,152 @@
+{
+  "name": "MONITOR DE COTAÇÃO",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        -16
+      ],
+      "id": "3fa9d828-d90b-4053-b726-d392d92d497c",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        224,
+        -16
+      ],
+      "id": "64f4a85a-f564-4e0c-b19f-66336fa4fc83",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "url": "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=brl&include_24hr_change=true",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        448,
+        -16
+      ],
+      "id": "5846ddbb-914b-48fd-ac51-7ee9c2701cdc",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Funções de Formatação\nconst formatarBRL = (valor) => {\n  const n = Number(valor);\n  return isNaN(n) ? \"R$ 0,00\" : n.toLocaleString(\"pt-BR\", { style: \"currency\", currency: \"BRL\" });\n};\n\nconst formatarPct = (valor) => {\n  const n = Number(valor);\n  if (isNaN(n)) return \"0,00%\";\n  const sinal = n >= 0 ? \"📈 +\" : \"📉 \";\n  return `${sinal}${n.toFixed(2).replace(\".\", \",\")}%`;\n};\n\n// Captura dos Dados dos Nós Anteriores\nconst noCrypto = $(\"HTTP Request1\").first().json;\nconst noMoedas = $(\"HTTP Request\").first().json;\nconst noData   = $(\"Schedule Trigger\").first().json;\n\n// Tratamento da Data/Hora\nconst dia = String(noData[\"Day of month\"]).padStart(2, '0');\nconst mesNum = noData[\"Month\"]; \nconst ano = noData[\"Year\"];\nconst hora = String(noData[\"Hour\"]).padStart(2, '0');\nconst minuto = String(noData[\"Minute\"]).padStart(2, '0');\n\nconst mesesPT = {\n  \"January\": \"Janeiro\", \"February\": \"Fevereiro\", \"March\": \"Março\", \n  \"April\": \"Abril\", \"May\": \"Maio\", \"June\": \"Junho\", \n  \"July\": \"Julho\", \"August\": \"Agosto\", \"September\": \"Setembro\", \n  \"October\": \"Outubro\", \"November\": \"Novembro\", \"December\": \"Dezembro\"\n};\nconst mesTexto = mesesPT[mesNum] || mesNum;\n\n// Retorna apenas os dados puros devidamente tratados\nreturn {\n  json: {\n    data_formatada: `${dia} de ${mesTexto} de ${ano} às ${hora}:${minuto}`,\n    bitcoin: {\n      valor: formatarBRL(noCrypto.bitcoin.brl),\n      variacao_24h: formatarPct(noCrypto.bitcoin.brl_24h_change)\n    },\n    dolar: {\n      compra: formatarBRL(noMoedas.USDBRL.bid),\n      venda: formatarBRL(noMoedas.USDBRL.ask),\n      variacao: formatarPct(noMoedas.USDBRL.pctChange)\n    },\n    euro: {\n      compra: formatarBRL(noMoedas.EURBRL.bid),\n      venda: formatarBRL(noMoedas.EURBRL.ask),\n      variacao: formatarPct(noMoedas.EURBRL.pctChange)\n    }\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        -16
+      ],
+      "id": "02e3eb79-1997-4f1f-b8ae-3c551f259366",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "chatId": "8285794423",
+        "text": "=📊 <b>MONITOR DE COTAÇÕES DIÁRIO</b>\n📅 {{ $json.data_formatada }}\n\n💵 <b>Dólar (USD)</b>\n• Compra: {{ $json.dolar.compra }}\n• Venda: {{ $json.dolar.venda }}\n• Variação: {{ $json.dolar.variacao }}\n\n💶 <b>Euro (EUR)</b>\n• Compra: {{ $json.euro.compra }}\n• Venda: {{ $json.euro.venda }}\n• Variação: {{ $json.euro.variacao }}\n\n₿ <b>Bitcoin (BTC)</b>\n• Valor: {{ $json.bitcoin.valor }}\n• Variação 24h: {{ $json.bitcoin.variacao_24h }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        928,
+        -16
+      ],
+      "id": "d5a9bc1a-28d1-407f-ad24-7348b387a296",
+      "name": "Send a text message",
+      "webhookId": "60182d5f-ca06-45e8-82ce-0f166d2a8f1a",
+      "credentials": {
+        "telegramApi": {
+          "id": "HuDS9kDUB862yJQ8",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "timezone": "America/Sao_Paulo",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "6302c4bd-f836-4224-90d5-4d098e0f430d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "03a91b45168fb16173347940ea0a91771adf1d5a71f12dd0d07e12c4fd4f9000"
+  },
+  "id": "rPuGkSBcXmlsi8OIQUbjq",
+  "tags": []
+}
